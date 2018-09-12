@@ -1,0 +1,29 @@
+{
+  "name": "src-help",
+  "version": "0.0.1",
+  "description": "源码阅读助手，自动生成md文件",
+  "main": "src/index.js",
+  "bin": {
+    "srch": "bin/bin"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tangciwei",
+  "license": "ISC",
+  "dependencies": {
+    "string": "^3.3.3"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tangciwei/src-help.git"
+  },
+  "keywords": [
+    "源码助手"
+  ],
+  "bugs": {
+    "url": "https://github.com/tangciwei/src-help/issues"
+  },
+  "homepage": "https://github.com/tangciwei/src-help#readme"
+}
