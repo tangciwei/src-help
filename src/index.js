@@ -72,7 +72,7 @@ function dealFile(content = '') {
     }
 
     result = result.map((item, i) => {
-        let preCode = `\`${codeArr[i]}\`\n\n`;
+        let preCode = `**\`${codeArr[i]}\`**\n\n`;
         return preCode + item.split('\n').map(line => {
                 return line.trim().slice(2);
             }).join('\n');
@@ -86,7 +86,7 @@ async function readAndDeal(path, dealFile, mdObj, key) {
     let content = await readFile(path, 'utf8');
     let result = dealFile(content);
     if (result.length > 0) {
-        result = result.join('\n---------\n\n');
+        result = result.join('\n\n');
         mdObj[key] = result;
     }
     else {
@@ -148,28 +148,59 @@ function generateMdContent(tree) {
     let result = '';
     // 给标题增加索引
     function addIndex(level, count) {
-        let mapCount = {
-            1: '一',
-            2: '二',
-            3: '三',
-            4: '四',
-            5: '五',
-            6: '六',
-            7: '七',
-            8: '八',
-            9: '九'
+        let showLevelCount = {
+            1: {
+                1: 'Ⅰ ',
+                2: 'Ⅱ ',
+                3: 'Ⅲ ',
+                4: 'Ⅳ ',
+                5: 'Ⅴ ',
+                6: 'Ⅵ ',
+                7: 'Ⅶ ',
+                8: 'Ⅷ ',
+                9: 'Ⅸ '
+            },
+            2: {
+                1: '一、',
+                2: '二、',
+                3: '三、',
+                4: '四、',
+                5: '五、',
+                6: '六、',
+                7: '七、',
+                8: '八、',
+                9: '九、'
+            },
+            3: {
+                1: '①',
+                2: '②',
+                3: '③',
+                4: '④',
+                5: '⑤',
+                6: '⑥',
+                7: '⑦',
+                8: '⑧',
+                9: '⑨'
+            },
+            4: {
+                1: '1.',
+                2: '2.',
+                3: '3.',
+                4: '4.',
+                5: '5.',
+                6: '6.',
+                7: '7.',
+                8: '8.',
+                9: '9.'
+            }
         };
 
         let showNum = count;
 
-        if (level === 1) {
-            showNum = '第' + count + '级';
+        try {
+            showNum = showLevelCount[level][count];
         }
-
-        if (level === 2) {
-            showNum = mapCount[count];
-            lastLevel = '1';
-        }
+        catch (e) {}
 
         return showNum;
     }
@@ -185,7 +216,7 @@ function generateMdContent(tree) {
 
             if (typeof val === 'object') {
                 if (!isEmpty(val)) {
-                    result += '#'.repeat(level) + ` ${showNum} ` + k + '\n\n';
+                    result += '#'.repeat(level) + ` ${showNum}` + k + '\n\n';
                     travel(val, level);
                 }
                 else {
@@ -193,8 +224,8 @@ function generateMdContent(tree) {
                 }
             }
             else {
-                result += '#'.repeat(level) + ` ${showNum} ` + k + '\n\n';
-                result += (val + '\n\n');
+                result += '#'.repeat(level) + ` ${showNum}` + k + '\n\n';
+                result += (val + '\n-----------\n\n');
             }
 
         }
