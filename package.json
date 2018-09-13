@@ -1,6 +1,6 @@
 {
   "name": "src-help",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "源码阅读助手，自动生成md文件",
   "main": "src/index.js",
   "bin": {

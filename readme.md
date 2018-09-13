@@ -43,7 +43,7 @@ export function initMixin(Vue: Class<Component>) {
 ## 使用说明
 
 1. 全局安装`npm install src-help -g`。
-2. 进入源码目录，运行`srch`, 然后会扫描目录下面所有文件。
+2. 进入源码目录，运行`srch`, 然后会扫描目录下面所有文件。运行`srch w`,将监听文件变化,更新markdown。
 3. 注释块以`// md`开头，以`// end`结尾，将收集中间内容，以及`// end`下一行代码。
 4. 初次运行将生成`config.json`和`tree.json`
 后续将直接扫描`tree.json`，可以自行对`tree.json`内容进行一定的删减。

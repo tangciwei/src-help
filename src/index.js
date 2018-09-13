@@ -81,6 +81,20 @@ function dealFile(content = '') {
     return result;
 }
 
+// 读文件然后处理
+async function readAndDeal(path, dealFile, mdObj, key) {
+    let content = await readFile(path, 'utf8');
+    let result = dealFile(content);
+    if (result.length > 0) {
+        result = result.join('\n---------\n\n');
+        mdObj[key] = result;
+    }
+    else {
+        result = '';
+    }
+    return result;
+}
+
 /**
  * 遍历文件树，每个文件读取并dealFile，最终得到一颗新树
  */
@@ -89,20 +103,6 @@ async function generateMdObj(tree, dealFile) {
     // md文件的对象；
     let mdObj = {};
     let promiseArr = [];
-
-    // 读文件然后处理
-    async function readAndDeal(path, dealFile, mdObj, k) {
-        let content = await readFile(path, 'utf8');
-        let result = dealFile(content);
-        if (result.length > 0) {
-            result = result.join('\n---------\n\n');
-            mdObj[k] = result;
-        }
-        else {
-            result = '';
-        }
-        return result;
-    }
 
     async function travelFiles(tree, mdObj) {
         for (let k in tree) {
@@ -214,6 +214,8 @@ async function addDir(path) {
     }
 }
 
+let watchLock = false;
+
 async function start() {
     let root = process.cwd();
     let tree = {};
@@ -232,6 +234,7 @@ async function start() {
     }
 
     let mdObj = await generateMdObj(tree, dealFile);
+
     let mdContent = generateMdContent(mdObj);
 
     let config = {
@@ -256,6 +259,34 @@ async function start() {
     let targetOut = config.targetOut ? config.targetOut : outSource + '/out.md';
 
     writeFile(targetOut, config.addPreContent + mdContent);
+
+    upDateMd(tree);
+}
+// TODO： 更新markdown文件,暴力方式，后续优化
+async function upDateMd(tree) {
+    if (watchLock) {
+        return;
+    }
+
+    watchLock = true;
+
+    let param = process.argv.slice(2);
+    if (param[0] === 'w' || param[0] === '-w') {
+        function travelFiles(tree) {
+            for (let k in tree) {
+                let val = tree[k];
+                if (typeof val === 'string') {
+                    fs.watch(val, (curr, prev) => {
+                        start();
+                    });
+                }
+                else {
+                    travelFiles(val);
+                }
+            }
+        }
+        travelFiles(tree);
+    }
 }
 
 module.exports = start;
