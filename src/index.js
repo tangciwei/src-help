@@ -74,7 +74,13 @@ function dealFile(content = '') {
     result = result.map((item, i) => {
         let preCode = `**\`${codeArr[i]}\`**\n\n`;
         return preCode + item.split('\n').map(line => {
-                return line.trim().slice(2);
+                line = line.trim();
+                let r = /^\/\/\s?(.*)/;
+                if (r.test(line)) {
+                    line = line.replace(r, ($0, $1) => $1);
+                }
+
+                return line;
             }).join('\n');
     });
 
@@ -248,6 +254,8 @@ async function addDir(path) {
 let watchLock = false;
 
 async function start() {
+    let timeStart = new Date().getTime();
+
     let root = process.cwd();
     let tree = {};
     let projectName = root.split('/').pop();
@@ -291,6 +299,8 @@ async function start() {
 
     writeFile(targetOut, config.addPreContent + mdContent);
 
+    // console.log('更新完成 ', new Date().getTime() - timeStart);
+    
     upDateMd(tree);
 }
 // TODO： 更新markdown文件,暴力方式，后续优化
